@@ -88,19 +88,72 @@ var upperCasedCharacters = [
   'Z'
 ];
 
+
 // Function to prompt user for password options
 function getPasswordOptions() {
+  let passLength;
+  do {
+    passLength = parseInt(prompt("Enter the length of the password (between 8 and 128 characters):"));
+    if (passLength < 8 || passLength > 128 || isNaN(passLength)) {
+      alert("Invalid input. Please enter a valid number between 8 and 128.");
+    }
+  } while (passLength < 8 || passLength > 128 || isNaN(passLength));
+  let incLowerChars = confirm("Do you want to include lowercase letters in your password?");
+  let incUpperChars = confirm("Do you want to include uppercase letters in your password?");
+  let incNumericChars = confirm("Do you want to include numbers in your password?");
+  let incSpecChars = confirm("Do you want to include special characters in your password?");
 
+  if (!(incLowerChars || incUpperChars || incNumericChars || incSpecChars)) {
+    alert("You must choose at least one character type.");
+    return getPasswordOptions();
+  }
+
+  return {
+    length: passLength,
+    incLowerChars,
+    incUpperChars,
+    incNumericChars,
+    incSpecChars
+  };
 }
+
+
 
 // Function for getting a random element from an array
 function getRandom(arr) {
-
+  let randomArrIndex = Math.floor(Math.random() * arr.length);
+  let randomArrElement = arr[randomArrIndex];
+  return randomArrElement;
 }
+
+let randSpecChars = getRandom(specialCharacters);
+let randLowerChars = getRandom(lowerCasedCharacters);
+let randUpperChars = getRandom(upperCasedCharacters);
+let randNumbers = getRandom(numericCharacters)
 
 // Function to generate password with user input
 function generatePassword() {
+  userPass = getPasswordOptions();
+  let finalPassword = '';
+  if (userPass.incLowerChars) {
+    finalPassword += lowerCasedCharacters.join('');
+  }
+  if (userPass.incSpecChars) {
+    finalPassword += specialCharacters.join('');
+  }
+  if (userPass.incNumericChars) {
+    finalPassword += numericCharacters.join('');
+  }
+  if (userPass.incUpperChars) {
+    finalPassword += upperCasedCharacters.join('');
+  }
 
+  let generatedPassword = "";
+  for (let i =0; i < userPass.length; i++) {
+    let randomIndex = Math.floor(Math.random() * finalPassword.length);
+    generatedPassword += finalPassword[randomIndex];
+  } 
+  return generatedPassword;
 }
 
 // Get references to the #generate element
